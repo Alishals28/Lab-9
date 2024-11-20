@@ -1,11 +1,4 @@
 #include <iostream>
-<<<<<<< HEAD
-using namespace std
-
-int main (){
-    cout << "hi" << endl;
-}
-
 #include <queue>
 #include <vector>
 #include <string>
