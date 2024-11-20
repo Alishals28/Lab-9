@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// RideRequest class
 class RideRequest
 {
 public:
@@ -17,6 +18,7 @@ public:
         : user(u), pickupLocation(p), dropoffLocation(d) {}
 };
 
+// User Class
 class User
 {
 public:
@@ -27,6 +29,7 @@ public:
     User(string u, string p, string phone) : username(u), password(p), phoneNumber(phone) {}
 };
 
+// Driver Class
 class Driver
 {
 public:
@@ -38,6 +41,7 @@ public:
     Driver(string n, string p, string phone) : name(n), password(p), phoneNumber(phone), available(true) {}
 };
 
+// SmartRide Class
 class SmartRide
 {
 private:
@@ -74,6 +78,8 @@ public:
     }
 };
 
+
+// Main Method
 int main()
 {
     SmartRide smartRide;
