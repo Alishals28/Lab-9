@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 using namespace std;
-// chsj
+
 class RideRequest
 {
 public:
@@ -22,8 +22,9 @@ class User
 public:
     string username;
     string password;
+    string phoneNumber;
 
-    User(string u, string p) : username(u), password(p) {}
+    User(string u, string p, string phone) : username(u), password(p), phoneNumber(phone) {}
 };
 
 class Driver
@@ -31,9 +32,10 @@ class Driver
 public:
     string name;
     string password;
+    string phoneNumber;
     bool available;
 
-    Driver(string n, string p) : name(n), password(p), available(true) {}
+    Driver(string n, string p, string phone) : name(n), password(p), phoneNumber(phone), available(true) {}
 };
 
 class SmartRide
@@ -44,14 +46,14 @@ private:
     unordered_map<string, Driver> drivers;
 
 public:
-    void addUser(const string& username, const string& password)
+    void addUser(const string& username, const string& password, const string& phoneNumber)
     {
-        users.emplace(username, User(username, password));
+        users.emplace(username, User(username, password, phoneNumber));
     }
 
-    void addDriver(const string& name, const string& password)
+    void addDriver(const string& name, const string& password, const string& phoneNumber)
     {
-        drivers.emplace(name, Driver(name, password));
+        drivers.emplace(name, Driver(name, password, phoneNumber));
     }
 
     void addRideRequest(const string& user, const string& pickup, const string& dropoff)
@@ -75,13 +77,11 @@ public:
 int main()
 {
     SmartRide smartRide;
-    smartRide.addUser("john_doe", "password123");
-    smartRide.addDriver("driver1", "driverpass");
+    smartRide.addUser("john_doe", "password123", "123-456-7890");
+    smartRide.addDriver("driver1", "driverpass", "098-765-4321");
 
     smartRide.addRideRequest("john_doe", "LocationA", "LocationB");
     smartRide.processRideRequests();
 
     return 0;
 }
-
->>>>>>> b9e0cfe8a0b6154d54c7bdc439ea32203f792802
