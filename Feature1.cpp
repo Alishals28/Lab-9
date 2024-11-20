@@ -1,4 +1,11 @@
 #include <iostream>
+<<<<<<< HEAD
+using namespace std
+
+int main (){
+    cout << "hi" << endl;
+}
+
 #include <queue>
 #include <vector>
 #include <string>
@@ -83,3 +90,5 @@ int main()
 
     return 0;
 }
+
+>>>>>>> b9e0cfe8a0b6154d54c7bdc439ea32203f792802
