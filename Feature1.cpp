@@ -4,90 +4,141 @@
 #include <string>
 #include <unordered_map>
 
-using namespace std;
-
-// RideRequest class
 class RideRequest
 {
 public:
-    string user;
-    string pickupLocation;
-    string dropoffLocation;
+    std::string user;
+    std::string pickupLocation;
+    std::string dropoffLocation;
 
-    RideRequest(string u, string p, string d)
+    RideRequest(std::string u, std::string p, std::string d)
         : user(u), pickupLocation(p), dropoffLocation(d) {}
 };
 
-// User Class
 class User
 {
 public:
-    string username;
-    string password;
-    string phoneNumber;
+    std::string username;
+    std::string password;
 
-    User(string u, string p, string phone) : username(u), password(p), phoneNumber(phone) {}
+    User() = default; // Default constructor
+    User(std::string u, std::string p) : username(u), password(p) {}
 };
 
-// Driver Class
 class Driver
 {
 public:
-    string name;
-    string password;
-    string phoneNumber;
+    std::string name;
+    std::string password;
     bool available;
 
-    Driver(string n, string p, string phone) : name(n), password(p), phoneNumber(phone), available(true) {}
+    Driver() = default; // Default constructor
+    Driver(std::string n, std::string p) : name(n), password(p), available(true) {}
 };
 
-// SmartRide Class
 class SmartRide
 {
 private:
-    queue<RideRequest> rideRequests;
-    unordered_map<string, User> users;
-    unordered_map<string, Driver> drivers;
+    std::queue<RideRequest> rideRequests;
+    std::unordered_map<std::string, User> users;
+    std::unordered_map<std::string, Driver> drivers;
 
 public:
-    void addUser(const string& username, const string& password, const string& phoneNumber)
+    void registerUser(const std::string &username, const std::string &password)
     {
-        users.emplace(username, User(username, password, phoneNumber));
+        users[username] = User(username, password);
+        std::cout << "User " << username << " registered successfully." << std::endl;
     }
 
-    void addDriver(const string& name, const string& password, const string& phoneNumber)
+    void registerDriver(const std::string &name, const std::string &password)
     {
-        drivers.emplace(name, Driver(name, password, phoneNumber));
+        drivers[name] = Driver(name, password);
+        std::cout << "Driver " << name << " registered successfully." << std::endl;
     }
 
-    void addRideRequest(const string& user, const string& pickup, const string& dropoff)
+    bool loginUser(const std::string &username, const std::string &password)
     {
-        rideRequests.emplace(user, pickup, dropoff);
+        if (users.find(username) != users.end() && users[username].password == password)
+        {
+            std::cout << "User " << username << " logged in successfully." << std::endl;
+            return true;
+        }
+        std::cout << "Invalid username or password for user." << std::endl;
+        return false;
     }
 
-    void processRideRequests()
+    bool loginDriver(const std::string &name, const std::string &password)
+    {
+        if (drivers.find(name) != drivers.end() && drivers[name].password == password)
+        {
+            std::cout << "Driver " << name << " logged in successfully." << std::endl;
+            return true;
+        }
+        std::cout << "Invalid name or password for driver." << std::endl;
+        return false;
+    }
+
+    void requestRide(const std::string &user, const std::string &pickup, const std::string &dropoff)
+    {
+        rideRequests.push(RideRequest(user, pickup, dropoff));
+    }
+
+    void assignRides()
     {
         while (!rideRequests.empty())
         {
             RideRequest request = rideRequests.front();
             rideRequests.pop();
-            cout << "Processing ride request for user: " << request.user
-                 << " from " << request.pickupLocation
-                 << " to " << request.dropoffLocation << endl;
+
+            for (auto &driverPair : drivers)
+            {
+                Driver &driver = driverPair.second;
+                if (driver.available)
+                {
+                    driver.available = false;
+                    std::cout << "Driver " << driver.name << " is assigned to " << request.user << std::endl;
+                    break;
+                }
+            }
+        }
+    }
+
+    void completeRide(const std::string &driverName)
+    {
+        if (drivers.find(driverName) != drivers.end())
+        {
+            drivers[driverName].available = true;
+            std::cout << "Driver " << driverName << " has completed the ride and is now available." << std::endl;
         }
     }
 };
 
-
-// Main Method
 int main()
 {
     SmartRide smartRide;
-    smartRide.addUser("john_doe", "password123", "123-456-7890");
-    smartRide.addDriver("driver1", "driverpass", "098-765-4321");
 
-    smartRide.addRideRequest("john_doe", "LocationA", "LocationB");
-    smartRide.processRideRequests();
+    // Register users and drivers
+    smartRide.registerUser("User1", "password1");
+    smartRide.registerUser("User2", "password2");
+    smartRide.registerDriver("Rimsha", "password3");
+    smartRide.registerDriver("Nasir", "password4");
+
+    // Log in users and drivers
+    smartRide.loginUser("User1", "password1");
+    smartRide.loginUser("User2", "password2");
+    smartRide.loginDriver("Rimsha", "password3");
+    smartRide.loginDriver("Nasir", "password4");
+
+    // Users request rides
+    smartRide.requestRide("User1", "LocationA", "LocationB");
+    smartRide.requestRide("User2", "LocationC", "LocationD");
+
+    // Assign rides to available drivers
+    smartRide.assignRides();
+
+    // Complete rides
+    smartRide.completeRide("Rimsha");
+    smartRide.assignRides();
 
     return 0;
 }
