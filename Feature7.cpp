@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <unordered_map>
 using namespace std;
 
 // Node structure for storing ride details
@@ -32,7 +33,6 @@ public:
             newRide->prev = tail;
             tail = newRide;
         }
-        cout << "Ride added: ID=" << id << ", Pickup=" << pickup << ", Destination=" << destination << endl;
     }
 
     // Display ride history from oldest to newest
@@ -42,7 +42,6 @@ public:
             return;
         }
         Ride* current = head;
-        cout << "Ride History (Oldest to Newest):" << endl;
         while (current) {
             cout << "Ride ID: " << current->rideID << ", Pickup: " << current->pickup
                  << ", Destination: " << current->destination << endl;
@@ -57,7 +56,6 @@ public:
             return;
         }
         Ride* current = tail;
-        cout << "Ride History (Newest to Oldest):" << endl;
         while (current) {
             cout << "Ride ID: " << current->rideID << ", Pickup: " << current->pickup
                  << ", Destination: " << current->destination << endl;
@@ -75,18 +73,39 @@ public:
     }
 };
 
+// Main program to manage users and their ride histories
 int main() {
-    RideHistory userHistory;
+    // User ride histories managed in an unordered_map
+    unordered_map<string, RideHistory*> userHistories;
 
-    // Adding rides to the history
-    userHistory.addRide(1, "NUST", "Airport");
-    userHistory.addRide(2, "Centauras Mall", "University");
-    userHistory.addRide(3, "F7 park", "PIMS");
+    // Hardcoded data: Add users and their rides
+    userHistories["Alisha"] = new RideHistory();
+    userHistories["Asma"] = new RideHistory();
+    userHistories["Rimsha"] = new RideHistory();
 
-    // Displaying ride history
-    userHistory.displayForward();
-    cout << endl;
-    userHistory.displayBackward();
+    // Adding rides for Alisha
+    userHistories["Alisha"]->addRide(1, "Home", "Airport");
+    userHistories["Alisha"]->addRide(2, "Airport", "Office");
+
+    // Adding rides for Asma
+    userHistories["Asma"]->addRide(3, "Park", "Hospital");
+    userHistories["Asma"]->addRide(4, "University", "Mall");
+
+    // Adding rides for Rimsha
+    userHistories["Rimsha"]->addRide(5, "University", "Library");
+    userHistories["Rimsha"]->addRide(6, "Library", "Cafe");
+
+    // Displaying user ride histories
+    for (const auto& user : userHistories) {
+        cout << "Ride History for " << user.first << ":" << endl;
+        user.second->displayForward();
+        cout << endl;
+    }
+
+    // Free allocated memory for RideHistory objects
+    for (const auto& user : userHistories) {
+        delete user.second;
+    }
 
     return 0;
 }
